@@ -5,7 +5,10 @@ Associated Global Azure Bootcamp 2019 presentation is available here
 # Web App
 Enter the Web App Directory
 
+## Build the Web App
 `npm build`
+
+## Start the Web App
 `npm start`
 
 browse to http://localhost:3000
