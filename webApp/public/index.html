@@ -1,0 +1,202 @@
+<html ng-app="consoleApp">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/zl-fetch@2.1.5"></script>
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>GAB 2019 Azure WebApp</title>
+
+    <meta name="description" content="Microsoft Global Azure Bootcamp">
+    <meta name="author" content="Darren Robinson MVP - darrenjrobinson.com">
+
+    <script type="text/javascript">
+        // Get Excuse from Azure Function 
+        function excuseLookup(excuseResults, error) {
+
+           // Show retrieving excuse section
+            toggle_visibility('excuseTableID')
+
+            var excuseURI = 'https://yourAZFunction.azurewebsites.net/api/excuse?code=34567898767=='
+            var beerURI = 'https://yourAZFunction.azurewebsites.net/api/beer/get?code=34567898767=='
+
+            // Call Azure Function to get the Excuse
+            let findExcuse = document.querySelector('.excuseResults')
+            zlFetch(
+                    excuseURI, {
+                        method: 'GET',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                .then(data => $('.excuseResults').html(data.body.excuse), toggle_visibility('excuseButtonID'))
+                .catch(error => {
+                    writeError(findExcuse, error)
+                })
+
+            // Call Azure Function to get the Beer
+            let findBeer = document.querySelector('.beerResults')
+            zlFetch(
+                    beerURI, {
+                        method: 'GET',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                .then(data => $('.suggestedBeer').html("<h2>A beer would probably help.</br>How does a " + data.body + " sound?</h2></br><h3><i class='fas fa-beer fa-7x blink'></i></h3>"), toggle_visibility('beerSuggestionID'))
+                .catch(error => {
+                    writeError(findBeer, error)
+                })
+        }
+
+        // Writes Errors
+        function writeError(errorDiv, error) {
+            let errorMessage = document.createElement('div')
+            errorMessage.classList.add('is-error')
+            errorMessage.innerHTML =
+                `<div> status: ${error.status}</div>
+                            <div> statusText: ${error.statusText} </div>
+                            <div> message: ${error.message} </div>
+                            <div> Azure Functions are still warming up. Refresh your browser</div>`
+            errorDiv.append(errorMessage)
+        }
+
+        function toggle_visibility(id) {
+            var e = document.getElementById(id);
+            if (e.style.display == 'block')
+                e.style.display = 'none';
+            else
+                e.style.display = 'block';
+        }
+
+    </script>
+
+    <style type="text/css">
+        .blink {
+            animation: blink 2s steps(5, start) infinite;
+            -webkit-animation: blink 1s steps(5, start) infinite;
+        }
+
+        @keyframes blink {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        @-webkit-keyframes blink {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        body {
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            font-size: 24px;
+            font-style: bold;
+            background-color: white;
+            padding-left: 3.0em;
+            padding-right: 3.0em;
+            color: red;
+        }
+
+        .btn {
+            font-size: 21px;
+        }
+
+        h1 {
+            font-size: 50px;
+            color: slategray;
+            text-align: center
+        }
+
+        h2 {
+            font-size: 22px;
+            color: burlywood;
+            text-align: center
+        }
+
+        h3 {
+            font-size: 22px;
+            color: orange;
+            text-align: center
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: normal;
+            color: cornflowerblue;
+        }
+
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <div class="container">
+            <span class="align-middle">
+                <h1>What's today's excuse?</h1>
+                <div class="excuseButton" id="excuseButtonID" style="display:block;">
+                    <div class="row justify-content-md-center center-block"></div>
+                    <button type="button" class="btn btn-primary" id="userLookup" onclick="excuseLookup()">Get an
+                        excuse</button>
+                </div>
+                </br>
+                <div class="excuseResults">
+                    <div class="excuseTable" id="excuseTableID" style="display:none;">
+                        </br>
+                        <div class="card text-muted">
+                            <p class="card-text">
+                                <i class="fas fa-exclamation-circle fa-3x blink"></i>
+                                <h3 class="card-title">...getting an excuse</br>
+                                </h3>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="beer">
+                    <div class="excuseBeer" id="beerSuggestionID" style="display:none;">
+                        </br>
+                        <button type="button" class="btn btn-link" id="newExcuseBeer"
+                           onmouseover="toggle_visibility('beerID')">.</button>
+                    </div>
+                </div>
+                <div class="remediation">
+                    <div class="suggestedBeer" id="beerID" style="display:none;">
+                        <div class="card text-muted">
+                            <p class="card-text">
+                                <h3 class="card-title"></h3>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </span>
+        </div>
+    </center>
+</body>
+
+</html>
