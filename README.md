@@ -1,4 +1,6 @@
 # BOFH-Excuse-Generator
+[Associated Blogpost](https://blog.darrenjrobinson.com/building-apps-in-azure-with-only-scripting-skills-global-azure-bootcamp-2019/)
+
 Demo Azure Web App that generates a Bastard Operator from Hell excuse and suggests a beer to help remedy the situation
 Associated Global Azure Bootcamp 2019 presentation is available here 
 
